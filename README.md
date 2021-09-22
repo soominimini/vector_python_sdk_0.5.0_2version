@@ -2,6 +2,12 @@
 
 ## Getting Started
 
+
+Instruct participants make the vector toward the participant 
+and follow the vector as parallel
+
+
+
 Before connecting, you will need:
 
 * Vector's Name: This is the name displayed on his face for BLE pairing after you double-click while Vector is on the charger. Example: `Vector-A1B2`
