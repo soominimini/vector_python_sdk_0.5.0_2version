@@ -54,7 +54,7 @@ def main():
         print("------ waiting for face events, press ctrl+c to exit early ------")
 
         try:
-            if not evt.wait(timeout=5):
+            if not evt.wait(timeout=200):
                 print("------ Vector never saw your face! ------")
         except KeyboardInterrupt:
             pass

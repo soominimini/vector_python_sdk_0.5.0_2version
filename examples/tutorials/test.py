@@ -1,4 +1,4 @@
-
+from multiprocessing import Process
 import threading
 import time
 import anki_vector
@@ -21,10 +21,12 @@ wake_word_heard7 = False
 wake_word_heard8 = False
 
 wake_word_heard_sk = False
+Face = False
 
 def first():
     evt = threading.Event()
 
+    # robot.conn.request_control()
     async def first_wake(event_type, event):
         await robot.conn.request_control()
 
@@ -41,42 +43,18 @@ def first():
     robot.events.subscribe(first_wake, Events.wake_word)
 
     print('------ Vector is waiting to hear "Hey Vector!" Press ctrl+c to exit early ------')
-
+    print(evt._flag)
+    # robot.requires_behavior_control =True
     try:
+        robot.conn.release_control()
         if not evt.wait(timeout=60):
-            print('------ Vector never heard "Hey Vector!" ------')
+            print("F")
+        print("after wait")
     except:
         pass
-    robot.conn.release_control()
+    # robot.conn.release_control()
+    robot.conn.request_control()
     robot.events.unsubscribe(first_wake, Events.wake_word)
-    # skipping()
-    second()
-
-def skipping():
-    evt_skip = threading.Event()
-    async def skip(event_type, event):
-        await robot.conn.request_control()
-        print("skip")
-        global wake_word_heard_sk
-        if not wake_word_heard_sk:
-            wake_word_heard_sk = True
-            await robot.anim.play_animation('anim_onboarding_reacttoface_happy_01_head_angle_40')
-            await robot.behavior.drive_straight(distance_mm(200), speed_mmps(100))
-            evt_skip.set()
-
-    robot.events.subscribe(skip, anki_vector.events.Events.wake_word)
-
-
-    print('------ Vector is waiting to hear "Hey Vector!" 2 ------')
-
-    try:
-        if not evt_skip.wait(timeout=60):
-            print('------ Vector never heard "Hey Vector!" ------')
-    except:
-        pass
-    robot.conn.release_control()
-    robot.events.unsubscribe(skip, Events.wake_word)
-    wake_word_heard_sk = False
     second()
 
 
@@ -90,7 +68,8 @@ def second():
         if not wake_word_heard2:
             wake_word_heard2 = True
             time.sleep(5)
-            await robot.behavior.say_text("of course! i will try!")
+            await robot.behavior.say_text("of course!")  #오른쪽에 있는 참가자를 바라보고 있는 상황
+            #Positive values turn to the left, negative values to the right.
             await robot.behavior.turn_in_place(degrees(90))  # or this can be placed with remote control
             await robot.behavior.drive_straight(distance_mm(200), speed_mmps(100)) # arrive on the spot
 
@@ -100,13 +79,16 @@ def second():
 
 
     print('------ Vector is waiting to hear "Hey Vector!" 2 ------')
-
+    # robot.requires_behavior_control = True
     try:
+        robot.conn.release_control()
+        time.sleep(10)
         if not evt2.wait(timeout=60):
             print('------ Vector never heard "Hey Vector!" ------')
     except:
         pass
-    robot.conn.release_control()
+    # robot.conn.release_control()
+    robot.conn.request_control()
     robot.events.unsubscribe(second_wake, Events.wake_word)
     third()
 
@@ -133,11 +115,14 @@ def third():
     print('------ Vector is waiting to hear "Hey Vector!" 3 ------')
 
     try:
+        robot.conn.release_control()
+        time.sleep(10)
         if not evt3.wait(timeout=60):
             print('------ Vector never heard "Hey Vector!" ------')
     except:
         pass
-    robot.conn.release_control()
+    # robot.conn.release_control()
+    robot.conn.request_control()
     robot.events.unsubscribe(third_wake, Events.wake_word)
     fourth()
 
@@ -153,6 +138,7 @@ def fourth():
             wake_word_heard4 = True
             time.sleep(5)
             await robot.behavior.say_text("okay... i will try...")
+            await robot.behavior.turn_in_place(degrees(90))
             await robot.behavior.set_head_angle(degrees(45.0))
             await robot.behavior.drive_straight(distance_mm(50), speed_mmps(10))
             await robot.behavior.turn_in_place(degrees(180))
@@ -169,11 +155,14 @@ def fourth():
     print('------ Vector is waiting to hear "Hey Vector!" 4 ------')
 
     try:
+        robot.conn.release_control()
+        time.sleep(10)
         if not evt4.wait(timeout=60):
             print('------ Vector never heard "Hey Vector!" ------')
     except:
         pass
-    robot.conn.release_control()
+    # robot.conn.release_control()
+    robot.conn.request_control()
     robot.events.unsubscribe(fourth_wake, anki_vector.events.Events.wake_word)
     fifth()
 
@@ -190,7 +179,8 @@ def fifth():
             time.sleep(5)
             await robot.behavior.set_head_angle(MAX_HEAD_ANGLE)
             await robot.behavior.say_text("okay....")
-            await robot.behavior.turn_in_place(degrees(-90))
+            await robot.behavior.turn_in_place(degrees(90))
+            #여기에 뭔가 더 필요
             await robot.anim.play_animation('anim_eyepose_sad_instronspect')
             await robot.behavior.say_text("sorry... i can't do this...")
             evt5.set()
@@ -199,6 +189,8 @@ def fifth():
     print('------ Vector is waiting to hear "Hey Vector!" 5 ------')
 
     try:
+        robot.conn.release_control()
+        time.sleep(10)
         if not evt5.wait(timeout=60):
             print('------ Vector never heard "Hey Vector!" ------')
     except:
@@ -228,6 +220,8 @@ def sixth():
     print('------ Vector is waiting to hear "Hey Vector!" Press ctrl+c to exit early ------')
 
     try:
+        robot.conn.release_control()
+        time.sleep(10)
         if not evt6.wait(timeout=60):
             print('------ Vector never heard "Hey Vector!" ------')
     except:
@@ -248,7 +242,7 @@ def seventh():
             await robot.behavior.set_head_angle(MAX_HEAD_ANGLE)
             await robot.anim.play_animation('anim_eyepose_determined')
             await robot.behavior.say_text("Okay I will try!")
-            await robot.behavior.turn_in_place(degrees(-90))
+            await robot.behavior.turn_in_place(degrees(90))
             await robot.behavior.drive_straight(distance_mm(100), speed_mmps(50))
             await robot.behavior.drive_straight(distance_mm(100), speed_mmps(100))
             # encounter
@@ -268,6 +262,8 @@ def seventh():
     print('------ Vector is waiting to hear "Hey Vector!" Press ctrl+c to exit early ------')
 
     try:
+        robot.conn.release_control()
+        time.sleep(10)
         if not evt7.wait(timeout=60):
             print('------ Vector never heard "Hey Vector!" ------')
     except:
@@ -287,9 +283,10 @@ def eighth():
             wake_word_heard8 = True
             time.sleep(5)
             await robot.behavior.say_text("okay! i will try again!")
+            await robot.behavior.turn_in_place(degrees(90))
             await robot.behavior.drive_straight(distance_mm(200), speed_mmps(50))
             await robot.behavior.drive_straight(distance_mm(200), speed_mmps(100))
-            await robot.behavior.turn_in_place(degrees(-90))
+            await robot.behavior.turn_in_place(degrees(200))
             await robot.behavior.set_head_angle(MAX_HEAD_ANGLE)
             await robot.anim.play_animation('anim_greeting_happy_03_head_angle_40')
             await robot.behavior.say_text("i did it!!")
@@ -301,6 +298,8 @@ def eighth():
     print('------ Vector is waiting to hear "Hey Vector!" Press ctrl+c to exit early ------')
 
     try:
+        robot.conn.release_control()
+        time.sleep(10)
         if not evt8.wait(timeout=60):
             print('------ Vector never heard "Hey Vector!" ------')
     except:
@@ -310,5 +309,5 @@ def eighth():
 
 
 if __name__ == '__main__':
-    with anki_vector.Robot(requires_behavior_control=False) as robot:
+    with anki_vector.Robot(requires_behavior_control=True,enable_face_detection=True) as robot:
         first()
