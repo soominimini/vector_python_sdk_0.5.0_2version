@@ -72,6 +72,7 @@ def second():
             #Positive values turn to the left, negative values to the right.
             await robot.behavior.turn_in_place(degrees(90))  # or this can be placed with remote control
             await robot.behavior.drive_straight(distance_mm(200), speed_mmps(100)) # arrive on the spot
+            await robot.behavior.turn_in_place(degrees(-90)) # 참가자를 바라보는 것으로 끝맺음
 
             evt2.set()
 
@@ -102,8 +103,9 @@ def third():
         if not wake_word_heard3:
             wake_word_heard3 = True
             time.sleep(5)
-            await robot.behavior.turn_in_place(degrees(-90))
+            await robot.behavior.turn_in_place(degrees(90))
             await robot.behavior.set_head_angle(MAX_HEAD_ANGLE)
+            await robot.behavior.turn_in_place(degrees(-90))
             await robot.anim.play_animation('anim_eyepose_sad_instronspect')
             await robot.behavior.say_text("it seems scary..")
             evt3.set()
@@ -181,6 +183,9 @@ def fifth():
             await robot.behavior.say_text("okay....")
             await robot.behavior.turn_in_place(degrees(90))
             #여기에 뭔가 더 필요
+            await robot.anim.play_animation('anim_reacttocliff_edge_04')
+            time.sleep(2)
+            await robot.behavior.turn_in_place(degrees(-90))
             await robot.anim.play_animation('anim_eyepose_sad_instronspect')
             await robot.behavior.say_text("sorry... i can't do this...")
             evt5.set()
@@ -208,10 +213,11 @@ def sixth():
         if not wake_word_heard6:
             wake_word_heard6 = True
             time.sleep(6)
-            await robot.behavior.turn_in_place(degrees(-90))
+            await robot.behavior.turn_in_place(degrees(90))
             await robot.behavior.set_head_angle(MAX_HEAD_ANGLE)
             await robot.anim.play_animation('anim_eyepose_sad_instronspect')
-            await robot.behavior.say_text("it seems scary..")
+            await robot.behavior.turn_in_place(degrees(-90))
+            await robot.behavior.say_text("but it is too scary..")
             evt6.set()
 
     robot.events.subscribe(sixth_wake, anki_vector.events.Events.wake_word)
@@ -286,7 +292,7 @@ def eighth():
             await robot.behavior.turn_in_place(degrees(90))
             await robot.behavior.drive_straight(distance_mm(200), speed_mmps(50))
             await robot.behavior.drive_straight(distance_mm(200), speed_mmps(100))
-            await robot.behavior.turn_in_place(degrees(200))
+            await robot.behavior.turn_in_place(degrees(270))
             await robot.behavior.set_head_angle(MAX_HEAD_ANGLE)
             await robot.anim.play_animation('anim_greeting_happy_03_head_angle_40')
             await robot.behavior.say_text("i did it!!")

@@ -23,7 +23,7 @@ import anki_vector
 def main():
     args = anki_vector.util.parse_command_args()
     with anki_vector.Robot(args.serial) as robot:
-        robot.behavior.drive_off_charger()
+        # robot.behavior.drive_off_charger()
 
         # Play an animation via its name.
         #
@@ -33,8 +33,8 @@ def main():
         # See the remote_control.py example in apps for an easy way to see
         # the available animations.
         animation = 'anim_pounce_success_02'
-        print("Playing animation by name: " + animation)
-        robot.anim.play_animation(animation)
+        print(robot.anim.anim_list)
+        robot.anim.play_animation('anim_reacttocliff_edge_04')
 
 
 if __name__ == "__main__":
