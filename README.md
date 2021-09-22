@@ -1,10 +1,11 @@
 # Anki Vector - Python SDK
-
-## Getting Started
-
+## Experiment
 
 Instruct participants make the vector toward the participant 
 and follow the vector as parallel
+
+
+## Getting Started
 
 
 
